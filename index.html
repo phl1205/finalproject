@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Irregular Verb Flashcard App </title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<!-- The font used for the flashcard app. You can change this to any other font. -->
+		<link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&display=swap" rel="stylesheet" />
+		<!-- This line loads the CSS file containing the styles for the flashcard app. It can be modified to change the appearance of the app. -->
+		<link rel="stylesheet" href="./index.css" />
+	</head>
+	<body>
+		<!-- These hidden checkboxes store the toggling state of the entries panel and the flashcard. Don't remove them. -->
+		<input type="checkbox" id="toggle-entries-checkbox" hidden />
+		<input type="checkbox" id="flip-card-checkbox" hidden />
+		<main>
+			<!-- The header includes a button to show/hide all flashcard entries. -->
+			<h1 id="header">
+				<label for="toggle-entries-checkbox" id="toggle-entries" title="Show All Entries">|||</label>
+				Irregular Explorers 🔎🗺️
+			</h1>
+			<section id="start-page">
+				<div class="particles-container"></div>
+				<div class="floating-elements">
+					<span class="floating-icon">📚</span>
+					<span class="floating-icon">🎯</span>
+					<span class="floating-icon">🌟</span>
+					<span class="floating-icon">🎮</span>
+					<span class="floating-icon">🏆</span>
+				</div>
+				<div class="welcome-container">
+					<h3 id="front-title">Master English verbs through fun challenges</h3>
+				</div>
+				
+				<div class="features-container">
+					<div class="feature-card">
+						<span class="feature-icon">📖</span>
+						<h3>Learn</h3>
+						<p>Interactive flashcards for effective learning</p>
+					</div>
+					<div class="feature-card">
+						<span class="feature-icon">🎮</span>
+						<h3>Practice</h3>
+						<p>Engaging quizzes to test your knowledge</p>
+					</div>
+					<div class="feature-card">
+						<span class="feature-icon">🗺️</span>
+						<h3>Explore</h3>
+						<p>Complete missions and unlock achievements</p>
+					</div>
+				</div>
+			
+				<div class="main-buttons">
+					<button id="btn-revision" class="button-revision-type">
+						<span class="button-icon">📚</span>
+						Revision Verbs
+					</button>
+					<button id="btn-quiz" class="button-revision-type">
+						<span class="button-icon">✍🏼</span>
+						Quiz
+					</button>
+					<button id="btn-show-map" class="button-revision-type">
+						<span class="button-icon">🗺️</span>
+						Mission
+					</button>
+				</div>
+			
+				<div class="score-history">
+					<div class="score-header">
+						<h3>🏆 High Scores</h3>
+						<span class="score-badge">Top 5</span>
+					</div>
+					<div id="score-list"></div>
+				</div>
+			</section>
+
+			<section id="verb-types" hidden>
+				<h2>Choose Verb Type</h2>
+				<div class="verb-type-buttons">
+					<button id="btn-revision-1" class="button-revision-type">Irregular Verb A</button>
+					<button id="btn-revision-2" class="button-revision-type">Irregular Verb B</button>
+					<button id="btn-revision-3" class="button-revision-type">Irregular Verb C</button>
+					<button id="btn-revision-4" class="button-revision-type">Irregular Verb D</button>
+					<button id="btn-revision-regular" class="button-revision-type">Regular Verb 💪🏽</button>
+				</div>
+				<button id="btn-verb-back" class="button-revision-type">‹ Back to Home</button>
+			</section>
+
+			<section id="quiz-levels" hidden>
+				<h2>Choose Quiz Level</h2>
+				<h3 class="excitement-text">Are you Ready!??</h3>
+				<div class="quiz-instructions">
+					<h4>How to Score:</h4>
+					<ul>
+						<li>Level 1: +1 mark for each correct answer</li>
+						<li>Level 2: +2 marks for each correct answer, -1 mark for wrong answer</li>
+					</ul>
+				</div>
+				<div class="score-container">
+					<h3>Your Score: <span id="quiz-score">0</span></h3>
+				</div>
+				<div class="level-buttons-container">
+					<button id="btn-level-1" class="quiz-level-btn level-1">Level 1</button>
+					<button id="btn-level-2" class="quiz-level-btn level-2">Level 2</button>
+				</div>
+				<button id="btn-quiz-back" class="quiz-level-btn">‹ Back to Home</button>
+			</section>
+			
+			 <!-- Add this new section after the quiz-levels section -->
+			<section id="map-view" hidden>
+				<h1 id="header">World Map View</h1>
+				<!-- Add mission progress display -->
+				<div class="mission-progress">
+					<h3>Mission Progress</h3>
+					<div class="progress-bar">
+						<div class="progress-fill"></div>
+					</div>
+					<p class="progress-text">Completed: <span id="missions-completed">0</span>/<span id="total-missions">0</span></p>
+				</div>
+				<div class="map-grid-container">
+					<img src="./res/world-map.png" alt="World Map" class="world-map-image">
+					<div class="map-grid">
+						<!-- 60 grid cells will be dynamically generated by JavaScript -->
+					</div>
+				</div>
+				<button id="btn-map-back" class="button-revision-type">‹ Back</button>
+			</section>
+			
+			<!-- This section displays a table of all cards for quick access. -->
+			<section id="entries">
+				<div id="entries-inner">
+					<table>
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Word</th>
+							</tr>
+						</thead>
+						<tbody id="entries-body"></tbody>
+					</table>
+				</div>
+			</section>
+			<!-- The main flashcard section. Clicking flips between front and back. -->
+			<section id="flashcard" hidden>
+				<div id="card-inner">
+					<!-- STUDENTS: Start of recommended modifications -->
+					<!-- Add and rearrange HTML elements inside .card-front and .card-back below. -->
+					<div class="card card-front">
+						<!-- Revision layout - keep unchanged -->
+						<div class="revision-layout" id="revision-mode">
+							<div class="revision-left">
+								<div class="image-section">
+									<img id="front-image" alt="Verb illustration" />
+								</div>
+							</div>
+							<div class="revision-middle">
+								<div class="verb-boxes">
+									<div class="verb-box">
+										<h3>Present</h3>
+										<span id="front-present-word"></span>
+										<audio id="front-audio-present" controls></audio>
+									</div>
+									<div class="verb-box">
+										<h3>Past</h3>
+										<span id="front-past-word"></span>
+										<audio id="front-audio-past" controls></audio>
+									</div>
+									<div class="verb-box">
+										<h3> Chinese Meaning</h3>
+										<span id="front-word-chinese-meaning"></span>
+									</div>
+								</div>
+							</div>
+							<div class="revision-right">
+								<div class="sentence-box">
+									<div class="sentence-item">
+										<h3>Present Tense Sentence</h3>
+										<p id="front-sentence-present"></p>
+										<audio id="front-audio-present-sentence" controls></audio>
+									</div>
+									<div class="sentence-item">
+										<h3>Past Tense Sentence</h3>
+										<p id="front-sentence-past"></p>
+										<audio id="front-audio-past-sentence" controls></audio>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- Quiz layout -->
+						<div class="quiz-layout" id="quiz-mode" hidden>
+							<div class="quiz-header">
+							</div>
+							<div class="quiz-score-display">
+								<h3>Score: <span id="quiz-score-current">0</span></h3>
+							</div>
+							<div class="quiz-left">
+								<div class="quiz-image-section">
+									<img id="quiz-image" alt="Quiz illustration" class="blur-image" />
+								</div>
+							</div>
+							<div class="quiz-right">
+								<!-- Level 1 Layout -->
+								<div id="quiz-level-1-layout">
+									<div class="quiz-options">
+										<button class="quiz-sentence-option" id="option1"></button>
+										<button class="quiz-sentence-option" id="option2"></button>
+									</div>
+									<div class="quiz-feedback" hidden>
+										<h3 id="quiz-result"></h3>
+										<p id="quiz-correct-answer"></p>
+										<audio id="feedback-sound" src=""></audio>
+									</div>
+								</div>
+								
+								<!-- Level 2 Layout -->
+								<div id="quiz-level-2-layout" hidden>
+									<div class="fill-in-blank-container">
+										<p id="quiz-sentence-blank"></p>
+										<!-- Add hint container -->
+										<div class="hint-container">
+											<button id="show-hint" class="hint-button">Need a Hint? 🤔</button>
+											<div id="hint-text" class="hint-text" hidden>
+												<p id="hint-first-letter"></p>
+												<p id="hint-word-length"></p>
+												<p id="hint-chinese"></p>
+											</div>
+										</div>
+										<div class="answer-input-container">
+											<input type="text" id="answer-input" placeholder="Type your answer here..." />
+											<button id="btn-submit-answer">Submit</button>
+										</div>
+									</div>
+									<div class="quiz-feedback-level2" hidden>
+										<h3 id="quiz-result-level2"></h3>
+										<p id="quiz-correct-sentence"></p>
+										<audio id="feedback-sound-level2" src=""></audio>
+										<audio id="sentence-audio" src=""></audio>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="card card-back">
+						<div class="feedback-container">
+							<h2 id="quiz-correctness" class="feedback-title"></h2>
+							<div class="feedback-content">
+								<p id="quiz-explanation" class="feedback-text"></p>
+								<div class="quiz-buttons">
+									<button class="quiz-option" data-answer="1"></button>
+									<button class="quiz-option" data-answer="2"></button>
+									<button class="quiz-option" data-answer="3"></button>
+								</div>
+								<div class="feedback-word">
+									<span id="quiz-word" class="highlight"></span>
+								</div>
+								<div class="feedback-sentence">
+									<p id="quiz-sentence"></p>
+									<audio id="quiz-audio" controls></audio>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- Navigation and learning progress buttons for the current flashcard. -->
+			<div id="actions">
+				<button id="btn-back">‹ Back</button>
+				<div class="quiz-timer">
+					<h3>Time Left: <span id="timer">1:00</span></h3>
+				</div>
+				<button id="btn-next">Next Word ›</button>
+			</div>
+
+			<!-- Add congratulations page -->
+			<section id="congratulations-page" class="congratulations" hidden>
+				<div class="confetti"></div>
+				<div class="congrats-content">
+					<h2>🎉 Congratulations! 🎉</h2>
+					<h3>Mission Completed!</h3>
+					<div class="final-score">
+						<p>Your Final Score: <span id="final-score">0</span></p>
+					</div>
+					<button id="btn-return-home" class="button-revision-type">Return to Home</button>
+				</div>
+			</section>
+			<!-- This line imports the JavaScript file containing the logic for the flashcard app. It can be modified to add functionality to the app. -->
+			<script src="./index.js" type="module"></script>
+			
+		</main>
+	</body>
+</html>
