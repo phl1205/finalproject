@@ -314,19 +314,49 @@ button:hover {
 }
 
 .level-1 {
-    background-color: #2ecc71; /* Green color */
+    background: linear-gradient(45deg, #ff6b6b, #ffd93d); /* Warm colors */
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
 }
 
 .level-1:hover {
-    background-color: #27ae60; /* Darker green on hover */
+    background: linear-gradient(45deg, #ff5252, #ffcd38); /* Darker warm colors */
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .level-2 {
-    background-color: #e74c3c; /* Red color */
+    background: linear-gradient(45deg, #4facfe, #00f2fe); /* Cool colors */
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
 }
 
 .level-2:hover {
-    background-color: #c0392b; /* Darker red on hover */
+    background: linear-gradient(45deg, #4295d1, #00d4dd); /* Darker cool colors */
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.level-max {
+    background: linear-gradient(45deg, #ff6b6b, #4facfe, #2ecc71); /* Full rainbow */
+    background-size: 200% 200%;
+    color: white;
+    border: none;
+    animation: gradient 5s ease infinite;
+}
+
+.level-max:hover {
+    background: linear-gradient(45deg, #ff5252, #4295d1, #27ae60); /* Darker rainbow */
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .excitement-text {

@@ -71,6 +71,35 @@ function renderCard() {
         currentCard = quizCards[currentIndex];
         // Show timer only in quiz mode
         document.querySelector('.quiz-timer').style.display = 'flex';
+        
+        // Add this new condition for Level Max
+        if (revisionType === "max") {
+            // Randomly choose between Level 1 and Level 2 for each question
+            const isLevel1 = Math.random() < 0.5;
+            document.getElementById('quiz-level-1-layout').hidden = !isLevel1;
+            document.getElementById('quiz-level-2-layout').hidden = isLevel1;
+            
+            const quizImage = document.getElementById('quiz-image');
+            // Always start with blur for new question
+            quizImage.classList.add('blur-image');
+            quizImage.classList.remove('grayscale-image', 'colorful-image');
+            
+            if (isLevel1) {
+                renderQuizLevel1(currentCard);
+            } else {
+                renderQuizLevel2(currentCard);
+            }
+        } else {
+            // Existing logic for Level 1 and 2
+            document.getElementById('quiz-level-1-layout').hidden = revisionType !== "1";
+            document.getElementById('quiz-level-2-layout').hidden = revisionType !== "2";
+            
+            if (revisionType === "1") {
+                renderQuizLevel1(currentCard);
+            } else if (revisionType === "2") {
+                renderQuizLevel2(currentCard);
+            }
+        }
     } else {
         if (!cards[revisionType]) return;
         currentCard = cards[revisionType][currentIndex];
@@ -241,7 +270,7 @@ function handleQuizLevel2Answer(userAnswer, correctVerb, fullSentence, card) {
     
     // Check if it's past tense and apply grayscale
     const isPastTense = card.wPast === correctVerb;
-    if (isPastTense) {
+    if (isPastTense && (revisionType === "2" || revisionType === "max")) {
         quizImage.classList.add('grayscale-image');
     }
     
@@ -308,25 +337,23 @@ function renderQuizLevel1(card) {
     }
     
     // Always start with blur, remove any existing grayscale
-    quizImage.classList.remove('grayscale');
+    quizImage.classList.add('blur-image');
+    quizImage.classList.remove('grayscale-image');
 
     // Set up quiz options
     const option1 = document.getElementById('option1');
     const option2 = document.getElementById('option2');
     
-    // Randomly decide correct option position
-    const isFirstOptionCorrect = Math.random() < 0.5;
+    // First decide if it's past or present tense
     const isPastTense = Math.random() < 0.5;
     
-    // Choose either present or past sentence as correct answer
-    // This line ensures one question is either sPresent or sPast
+    // Get the correct sentence based on tense
     const correctSentence = isPastTense ? card.sPast : card.sPresent;
-    
-    // Always use sWrong as the incorrect option
-    // This line ensures one question is always sWrong
     const wrongSentence = card.sWrong;
     
-    // Replace highlighting with plain text for quiz mode
+    // Randomly decide position of correct answer
+    const isFirstOptionCorrect = Math.random() < 0.5;
+    
     if (isFirstOptionCorrect) {
         option1.textContent = correctSentence;
         option2.textContent = wrongSentence;
@@ -344,7 +371,7 @@ function renderQuizLevel1(card) {
     // Hide feedback
     document.querySelector('.quiz-feedback').hidden = true;
     
-    // Add click handlers
+    // Add click handlers with the isPastTense flag
     [option1, option2].forEach(opt => {
         opt.onclick = function() {
             handleQuizAnswer(opt, correctSentence, card, isPastTense);
@@ -363,11 +390,11 @@ function handleQuizAnswer(selectedOption, correctSentence, card, isPastTense) {
     document.querySelector('.quiz-feedback').hidden = false;
     
     // Remove blur effect while maintaining size
-    quizImage.style.filter = 'none';
+    quizImage.classList.remove('blur-image');
     
-    // Apply grayscale for past tense in level 1 only after answer is selected
-    if (revisionType === "1" && isPastTense) {
-        quizImage.style.filter = 'grayscale(100%)';
+    // Apply grayscale for past tense in level 1 or max mode
+    if ((revisionType === "1" || (revisionType === "max" && document.getElementById('quiz-level-1-layout').hidden === false)) && isPastTense) {
+        quizImage.classList.add('grayscale-image');
     }
     
     if (selectedOption.textContent === correctSentence) {
@@ -790,7 +817,7 @@ for(const button of document.getElementsByClassName("quiz-level-btn")){
         currentIndex = 0;
         revisionType = level;
         
-        // Shuffle all cards for both quiz levels
+        // Shuffle all cards for all quiz levels
         quizCards = shuffleArray([...quizCards]);
         
         document.getElementById("flashcard").hidden = false;
@@ -866,52 +893,37 @@ const missions = {
         // Quiz Level 1 Missions (15 missions)
         ...[...Array(15)].reduce((acc, _, i) => ({
             ...acc,
-            [`0-${i}`]: {
-                title: `Quiz Master ${i + 1}`,
+            [`quiz-1-${i}`]: {
+                title: `Level 1 Master ${i + 1}`,
                 type: 'quiz',
                 level: "1",
-                target: 5 + Math.floor(i / 3) * 2,
-                description: `Complete ${5 + Math.floor(i / 3) * 2} Level 1 quiz questions correctly`
+                target: 5 + i * 2,
+                description: `Score ${5 + i * 2} points in Level 1`
             }
         }), {}),
 
-        // Quiz Level 2 Missions (10 missions)
-        ...[...Array(10)].reduce((acc, _, i) => ({
+        // Quiz Level 2 Missions (15 missions)
+        ...[...Array(15)].reduce((acc, _, i) => ({
             ...acc,
-            [`1-${i}`]: {
-                title: `Advanced Quiz ${i + 1}`,
+            [`quiz-2-${i}`]: {
+                title: `Level 2 Expert ${i + 1}`,
                 type: 'quiz',
                 level: "2",
-                target: 8 + Math.floor(i / 2) * 2,
-                description: `Score ${8 + Math.floor(i / 2) * 2} points in Level 2 quiz`
+                target: 8 + i * 3,
+                description: `Score ${8 + i * 3} points in Level 2`
             }
         }), {}),
 
-        // Regular Verbs Revision Missions (5 missions)
-        ...[...Array(5)].reduce((acc, _, i) => ({
+        // Quiz Level Max Missions (10 missions)
+        ...[...Array(10)].reduce((acc, _, i) => ({
             ...acc,
-            [`2-${i}`]: {
-                title: `Regular Verb Master ${i + 1}`,
-                type: 'revision',
-                verbType: 'regular',
-                target: 8 + i * 2,
-                description: `Master ${8 + i * 2} regular verbs`
+            [`quiz-max-${i}`]: {
+                title: `Level MAX Champion ${i + 1}`,
+                type: 'quiz',
+                level: "max",
+                target: 15 + i * 5,
+                description: `Score ${15 + i * 5} points in Level MAX`
             }
-        }), {}),
-
-        // Irregular Verb Group Missions (10 missions, reduced from 20)
-        ...[1, 2].reduce((groups, group) => ({
-            ...groups,
-            ...([...Array(5)].reduce((acc, _, i) => ({
-                ...acc,
-                [`3-${group}-${i}`]: {
-                    title: `Irregular ${String.fromCharCode(64 + group)} Expert ${i + 1}`,
-                    type: 'revision',
-                    verbType: String(group),
-                    target: 6 + i * 2,
-                    description: `Master ${6 + i * 2} irregular verbs from group ${String.fromCharCode(64 + group)}`
-                }
-            }), {}))
         }), {})
     }
 };
