@@ -1,4 +1,4 @@
-import dataset from "./data/database.json" with { type: "json" };
+import dataset from "./database.json" with { type: "json" };
 
 const cards = dataset.reduce((acc, item) => {
     const key = item.irLv || "regular";
@@ -127,10 +127,10 @@ function renderCard() {
             imageSection.classList.remove('loading');
             frontImage.src = img.src;
         };
-        img.src = `./res/${currentCard.img}`;
+        img.src = `${currentCard.img}`;
     } else {
         imageSection.classList.remove('loading');
-        frontImage.src = './res/default.png';
+        frontImage.src = 'default.png';
     }
     
     // Add entrance animation for content
@@ -152,7 +152,7 @@ function highlightVerb(sentence, verb) {
 
 function renderQuizCard(card) {
     const quizImage = document.getElementById('quiz-image');
-    const imagePath = card.img ? `./res/${card.img}` : null;
+    const imagePath = card.img ? `${card.img}` : null;
     if (imagePath) {
         quizImage.onerror = () => {
             console.log('Failed to load quiz image:', imagePath);
@@ -279,12 +279,12 @@ function handleQuizLevel2Answer(userAnswer, correctVerb, fullSentence, card) {
     if (isCorrect) {
         quizResult.textContent = "You've got this! 🎉";
         quizResult.classList.remove('incorrect');
-        feedbackSound.src = './res/correct.mp3';
+        feedbackSound.src = 'correct.mp3';
         quizScore += 2;
     } else {
         quizResult.textContent = "Don't give up! 💪";
         quizResult.classList.add('incorrect');
-        feedbackSound.src = './res/wrong.mp3';
+        feedbackSound.src = 'error.mp3';
         quizScore = Math.max(0, quizScore - 1);
     }
     
@@ -301,9 +301,9 @@ function handleQuizLevel2Answer(userAnswer, correctVerb, fullSentence, card) {
         feedbackSound.onended = () => {
             const sentenceAudio = new Audio();
             if (isPastTense && card.asPast) {
-                sentenceAudio.src = `./res/${card.asPast}`;
+                sentenceAudio.src = `${card.asPast}`;
             } else if (!isPastTense && card.asPresent) {
-                sentenceAudio.src = `./res/${card.asPresent}`;
+                sentenceAudio.src = `${card.asPresent}`;
             }
             
             if (sentenceAudio.src) {
@@ -325,7 +325,7 @@ function handleQuizLevel2Answer(userAnswer, correctVerb, fullSentence, card) {
 function renderQuizLevel1(card) {
     // Set up quiz image
     const quizImage = document.getElementById('quiz-image');
-    const imagePath = card.img ? `./res/${card.img}` : null;
+    const imagePath = card.img ? `${card.img}` : null;
     if (imagePath) {
         quizImage.onerror = () => {
             console.log('Failed to load quiz image:', imagePath);
@@ -401,7 +401,7 @@ function handleQuizAnswer(selectedOption, correctSentence, card, isPastTense) {
         quizResult.textContent = "You've got this! 🎉";
         quizResult.classList.remove('incorrect');
         selectedOption.classList.add('correct');
-        feedbackSound.src = './res/correct.mp3';
+        feedbackSound.src = 'correct.mp3';
         quizScore += 1; // Add 1 point for Level 1
         document.getElementById('quiz-score').textContent = quizScore;
         document.getElementById('quiz-score-current').textContent = quizScore;
@@ -409,7 +409,7 @@ function handleQuizAnswer(selectedOption, correctSentence, card, isPastTense) {
         quizResult.textContent = "Don't give up! 💪";
         quizResult.classList.add('incorrect');
         selectedOption.classList.add('incorrect');
-        feedbackSound.src = './res/wrong.mp3';
+        feedbackSound.src = 'error.mp3';
         quizCorrectAnswer.textContent = `Correct answer: ${correctSentence}`;
     }
     
@@ -422,9 +422,9 @@ function handleQuizAnswer(selectedOption, correctSentence, card, isPastTense) {
         // Play the sentence audio after the feedback sound
         const sentenceAudio = new Audio();
         if (isPastTense && card.asPast) {
-            sentenceAudio.src = `./res/${card.asPast}`;
+            sentenceAudio.src = `${card.asPast}`;
         } else if (!isPastTense && card.asPresent) {
-            sentenceAudio.src = `./res/${card.asPresent}`;
+            sentenceAudio.src = `${card.asPresent}`;
         }
         
         // Play sentence audio after feedbackSound finishes
@@ -458,7 +458,7 @@ function renderRevisionCard(card) {
     frontSentencePast.innerHTML = card.sPast ? highlightVerb(card.sPast, card.wPast) : '';
 
     // Image handling
-    const imagePath = card.img ? `./res/${card.img}` : null;
+    const imagePath = card.img ? `${card.img}` : null;
     if (imagePath) {
         frontImage.onerror = () => {
             console.log('Failed to load image:', imagePath);
@@ -470,10 +470,10 @@ function renderRevisionCard(card) {
     }
 
     // Audio setup
-    frontAudioPresent.src = card.awPresent ? `./res/${card.awPresent}` : '';
-    frontAudioPast.src = card.awPast ? `./res/${card.awPast}` : '';
-    frontAudioPresentSentence.src = card.asPresent ? `./res/${card.asPresent}` : '';
-    frontAudioPastSentence.src = card.asPast ? `./res/${card.asPast}` : '';
+    frontAudioPresent.src = card.awPresent ? `${card.awPresent}` : '';
+    frontAudioPast.src = card.awPast ? `${card.awPast}` : '';
+    frontAudioPresentSentence.src = card.asPresent ? `${card.asPresent}` : '';
+    frontAudioPastSentence.src = card.asPast ? `${card.asPast}` : '';
 }
 
 /** Navigates to the previous card. */
